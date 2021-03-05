@@ -18,7 +18,10 @@ const UserAppointmentController = {
 
     const appointments = await Appointment.findAll({
       where: { cpf: req.params.cpf },
-      order: [['date', 'DESC'], ['canceled_at']],
+      order: [
+        ['canceled_at', 'DESC'],
+        ['date', 'DESC'],
+      ],
     });
 
     const formattedAppointmets = appointments.map((a) => {

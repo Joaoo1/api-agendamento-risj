@@ -10,21 +10,21 @@ const AppointmentController = {
   async store(req, res) {
     try {
       const schema = Yup.object().shape({
-        name: Yup.string().required('Insira seu nome'),
-        phone: Yup.string(),
-        email: Yup.string(),
         cpf: Yup.string()
           .required('Insira um CPF')
           .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, { message: 'CPF inválido' }),
-        date: Yup.date().required('Selecione um dia e horário'),
+        name: Yup.string().required('Insira seu nome'),
+        phone: Yup.string(),
+        email: Yup.string(),
         doc_number: Yup.string(),
+        date: Yup.date().required('Selecione um dia e horário'),
       });
 
       try {
         await schema.validate(req.body, { abortEarly: false });
       } catch (err) {
         if (err.name === 'ValidationError') {
-          return res.status(400).json(err.errors);
+          return res.status(400).json({ errors: err.errors });
         }
 
         return res.status(500).json({ error: 'Ocorreu um erro no servidor.' });
@@ -71,7 +71,7 @@ const AppointmentController = {
 
       // Check availability
       const isNotAvailable = await Appointment.findOne({
-        where: { date: parsedDate },
+        where: { date: parsedDate, canceledAt: null },
       });
       if (isNotAvailable) {
         return res.status(400).json({ error: 'Horário indisponível.' });
