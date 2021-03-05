@@ -17,7 +17,7 @@ const AppointmentController = {
           .required('Insira um CPF')
           .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, { message: 'CPF inválido' }),
         date: Yup.date().required('Selecione um dia e horário'),
-        guia: Yup.string(),
+        doc_number: Yup.string(),
       });
 
       try {

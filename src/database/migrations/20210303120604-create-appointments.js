@@ -11,7 +11,7 @@ module.exports = {
         type: Sequelize.STRING(14),
         allowNull: false,
       },
-      guia: {
+      doc_number: {
         type: Sequelize.STRING(7),
       },
       date: {

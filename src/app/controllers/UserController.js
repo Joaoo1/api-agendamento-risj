@@ -22,7 +22,16 @@ const UserController = {
 
     const user = await User.findOne({ where: { cpf: req.params.cpf } });
 
-    return res.json(user || {});
+    return res.json(
+      user
+        ? {
+            cpf: user.cpf,
+            name: user.name,
+            phone: user.phone,
+            email: user.email,
+          }
+        : {}
+    );
   },
 };
 

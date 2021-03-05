@@ -18,14 +18,14 @@ const UserAppointmentController = {
 
     const appointments = await Appointment.findAll({
       where: { cpf: req.params.cpf },
-      order: [['date', 'DESC']],
+      order: [['date', 'DESC'], ['canceled_at']],
     });
 
     const formattedAppointmets = appointments.map((a) => {
       let status;
-      if (appointments.canceledAt) {
+      if (a.canceledAt) {
         status = 'Cancelado';
-      } else if (appointments.conclude) {
+      } else if (a.conclude) {
         status = 'Concluído';
       } else {
         status = 'Em aberto';

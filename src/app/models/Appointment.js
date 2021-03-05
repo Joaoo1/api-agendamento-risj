@@ -7,7 +7,7 @@ class Appointment extends Model {
         conclude: Sequelize.BOOLEAN,
         canceledAt: Sequelize.DATE,
         date: Sequelize.DATE,
-        guia: Sequelize.STRING,
+        docNumber: Sequelize.STRING,
       },
       {
         sequelize,
