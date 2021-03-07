@@ -10,7 +10,6 @@ import routes from './routes';
 import './database';
 
 const app = express();
-
 // Make server recognize the requests as JSON objects
 app.use(express.json());
 

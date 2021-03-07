@@ -47,6 +47,8 @@ const UserAppointmentController = {
 
     return res.json(formattedAppointmets);
   },
+
+  // Cancel the appointmnent
   async update(req, res) {
     const schema = Yup.object().shape({
       id: Yup.number().required(),
@@ -66,6 +68,12 @@ const UserAppointmentController = {
       return res
         .status(400)
         .json({ error: 'Este agendamento já foi cancelado.' });
+    }
+
+    if (appointment.conclude) {
+      return res
+        .status(400)
+        .json({ error: 'Este agendamento já foi concluído.' });
     }
 
     await appointment.update({ canceledAt: Date() });

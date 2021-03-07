@@ -1,30 +1,24 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('appointments', {
+    await queryInterface.createTable('admin_users', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      cpf: {
-        type: Sequelize.STRING(14),
-        allowNull: false,
-        references: { model: 'users', key: 'cpf' },
-        onUpdate: 'CASCADE',
-      },
-      doc_number: {
-        type: Sequelize.STRING(7),
-      },
-      date: {
-        type: Sequelize.DATE,
+      name: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
-      conclude: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+      login: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
       },
-      canceled_at: { type: Sequelize.DATE },
+      password_hash: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -37,6 +31,6 @@ module.exports = {
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('appointments');
+    await queryInterface.dropTable('admin_users');
   },
 };

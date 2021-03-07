@@ -18,7 +18,11 @@ class Appointment extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.User, { foreignKey: 'cpf' });
+    this.belongsTo(models.User, {
+      foreignKey: 'cpf',
+      targetKey: 'cpf',
+      as: 'user',
+    });
   }
 }
 
