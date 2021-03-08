@@ -94,10 +94,10 @@ const AppointmentController = {
       }
 
       // Check availability
-      const isNotAvailable = await Appointment.findOne({
+      const sameTime = await Appointment.findAll({
         where: { date: parsedDate, canceledAt: null },
       });
-      if (isNotAvailable) {
+      if (sameTime > 3) {
         return res.status(400).json({ error: 'Horário indisponível.' });
       }
 

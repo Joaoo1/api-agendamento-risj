@@ -47,7 +47,10 @@ const AvailableController = {
         available:
           isAfter(value, new Date()) &&
           !isWeekend(value) &&
-          !appointments.find((a) => format(a.date, 'HH:mm') === time),
+          appointments.reduce(
+            (n, val) => n + (format(val.date, 'HH:mm') === time),
+            0
+          ) < 4,
       };
     });
 
