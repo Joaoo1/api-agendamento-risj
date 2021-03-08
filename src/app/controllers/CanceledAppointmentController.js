@@ -25,6 +25,8 @@ const CanceledAppointmentController = {
         id: a.id,
         cpf: a.cpf,
         user: a.user,
+        services: a.services,
+        docNumber: a.docNumber,
         canceledAt: format(a.canceledAt, 'dd/MM/yyyy HH:mm', { locale: pt }),
         date: format(a.date, 'dd/MM/yyyy', { locale: pt }),
         hour: format(a.date, 'HH:mm', { locale: pt }),

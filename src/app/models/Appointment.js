@@ -8,6 +8,7 @@ class Appointment extends Model {
         canceledAt: Sequelize.DATE,
         date: Sequelize.DATE,
         docNumber: Sequelize.STRING,
+        services: Sequelize.ARRAY(Sequelize.STRING),
       },
       {
         sequelize,

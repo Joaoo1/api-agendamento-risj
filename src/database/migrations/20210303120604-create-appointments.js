@@ -14,7 +14,10 @@ module.exports = {
         onUpdate: 'CASCADE',
       },
       doc_number: {
-        type: Sequelize.STRING(7),
+        type: Sequelize.STRING,
+      },
+      services: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
       },
       date: {
         type: Sequelize.DATE,

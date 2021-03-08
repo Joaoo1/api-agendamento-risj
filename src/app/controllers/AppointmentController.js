@@ -16,8 +16,11 @@ const AppointmentController = {
         name: Yup.string().required('Insira seu nome'),
         phone: Yup.string(),
         email: Yup.string(),
-        doc_number: Yup.string(),
+        docNumber: Yup.string(),
         date: Yup.date().required('Selecione um dia e horário'),
+        services: Yup.array().required(
+          'Selecione pelo menos um tipo de atendimento'
+        ),
       });
 
       try {
@@ -107,15 +110,22 @@ const AppointmentController = {
       if (a.canceledAt) {
         status = 'Cancelado';
       } else if (a.conclude) {
-        status = 'Concluído';
+        status = 'Atendido';
       } else {
         status = 'Em aberto';
       }
+      /* 
+        Check if is past date
+        if (isBefore(a.date, new Date())) {
+        status = 'Faltou';
+      } */
 
       return {
         id: a.id,
         cpf: a.cpf,
         user: a.user,
+        services: a.services,
+        docNumber: a.docNumber,
         status,
         date: format(a.date, 'dd/MM/yyyy', { locale: pt }),
         hour: format(a.date, 'HH:mm', { locale: pt }),
