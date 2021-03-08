@@ -9,18 +9,39 @@ import Schedule from '../models/Schedule';
 const AppointmentController = {
   async store(req, res) {
     try {
+      const servicesRequireDocNumber = [
+        'Retirada de exigências',
+        'Retorno de exigências',
+        'Retirada de guia pronta',
+        'Retirada de pedido de certidão concluído',
+      ];
+
       const schema = Yup.object().shape({
         cpf: Yup.string()
           .required('Insira um CPF')
           .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, { message: 'CPF inválido' }),
         name: Yup.string().required('Insira seu nome'),
-        phone: Yup.string(),
-        email: Yup.string(),
-        docNumber: Yup.string(),
+        phone: Yup.string().required('Insira um telefone para contato'),
+        email: Yup.string().required('Insira um email'),
         date: Yup.date().required('Selecione um dia e horário'),
         services: Yup.array().required(
           'Selecione pelo menos um tipo de atendimento'
         ),
+        docNumber: Yup.string().when('services', (services, field) => {
+          // Check if one of the selected services requires docNumber
+          if (services) {
+            const isRequired = services.find(
+              (element) => servicesRequireDocNumber.indexOf(element) > -1
+            );
+            if (isRequired) {
+              return field.required(
+                'É necessário informar o número da guia/pedido de certidão'
+              );
+            }
+          }
+
+          return field;
+        }),
       });
 
       try {
@@ -30,7 +51,7 @@ const AppointmentController = {
           return res.status(400).json({ errors: err.errors });
         }
 
-        return res.status(500).json({ error: 'Ocorreu um erro no servidor.' });
+        return res.status(500).json({ error: err.message });
       }
 
       const { name, cpf, date, email, phone } = req.body;

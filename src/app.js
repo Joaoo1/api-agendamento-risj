@@ -13,7 +13,18 @@ const app = express();
 // Make server recognize the requests as JSON objects
 app.use(express.json());
 
-app.use(cors());
+if (process.env.NODE_ENV === 'development') {
+  app.use(cors({ origin: 'http://localhost:3000' }));
+} else {
+  app.use(
+    cors({
+      origin: [
+        'https://agendamento-risj-hodte.ondigitalocean.app',
+        'https://agendamento.risaojose.com.br',
+      ],
+    })
+  );
+}
 
 // Helmet helps to secure express apps by setting various HTTP headers
 app.use(helmet());

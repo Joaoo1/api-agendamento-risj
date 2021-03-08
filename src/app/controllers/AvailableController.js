@@ -31,7 +31,7 @@ const AvailableController = {
       },
     });
 
-    let schedules = await Schedule.findAll();
+    let schedules = await Schedule.findAll({ order: [['schedule']] });
     schedules = schedules.map((s) => s.schedule);
 
     const available = schedules.map((time) => {
