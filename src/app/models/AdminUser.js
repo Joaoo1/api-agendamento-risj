@@ -7,12 +7,22 @@ class AdminUser extends Model {
       {
         name: Sequelize.STRING,
         login: Sequelize.STRING,
-        password_hash: Sequelize.STRING,
+        password: Sequelize.VIRTUAL,
+        passwordHash: Sequelize.STRING,
+        isAdmin: Sequelize.BOOLEAN,
       },
       {
         sequelize,
       }
     );
+
+    this.addHook('beforeSave', async (user) => {
+      /* Just execute it if password was informed,
+        for example, on create user */
+      if (user.password) {
+        user.passwordHash = await bcrypt.hash(user.password, 8);
+      }
+    });
 
     return this;
   }
