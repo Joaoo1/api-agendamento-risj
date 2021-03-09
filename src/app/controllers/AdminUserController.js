@@ -5,7 +5,10 @@ const AvailableController = {
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required('Informe o nome'),
-      login: Yup.string().trim().min(6).required('Insira o login'),
+      login: Yup.string()
+        .trim()
+        .min(5, 'O login precisa ter no minímo 5 digítos')
+        .required('Insira o login'),
       password: Yup.string().min(8).required('Insira a senha'),
       confirmPassword: Yup.string().when('password', (password, field) =>
         password
