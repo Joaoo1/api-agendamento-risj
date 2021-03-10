@@ -10,6 +10,7 @@ import authUser from './app/middlewares/authUser';
 import authAdmin from './app/middlewares/authAdmin';
 import SessionController from './app/controllers/SessionController';
 import AdminUserController from './app/controllers/AdminUserController';
+import ConcludedAppointmentController from './app/controllers/ConcludedAppointmentController';
 
 const routes = Router();
 
@@ -18,7 +19,6 @@ routes.post('/appointments', AppointmentController.store);
 routes.get('/available', AvailableController.index);
 
 routes.put('/cancel_appointment/:id', UserAppointmentController.update);
-routes.put('/conclude_appointment/:id', AppointmentController.update);
 routes.get('/user_appointments/:cpf', UserAppointmentController.index);
 
 routes.get('/user/:cpf', UserController.show);
@@ -29,7 +29,11 @@ routes.use(authUser);
 
 routes.get('/appointments', AppointmentController.index);
 routes.get('/canceled_appointments', CanceledAppointmentController.index);
+
 routes.get('/schedule', ScheduleController.index);
+
+routes.put('/conclude_appointment/:id', ConcludedAppointmentController.update);
+routes.get('/concluded_appointments', ConcludedAppointmentController.index);
 
 routes.use(authAdmin);
 

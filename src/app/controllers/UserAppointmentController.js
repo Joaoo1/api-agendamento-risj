@@ -28,7 +28,7 @@ const UserAppointmentController = {
       let status;
       if (a.canceledAt) {
         status = 'Cancelado';
-      } else if (a.conclude) {
+      } else if (a.concludedBy) {
         status = 'Concluído';
       } else {
         status = 'Em aberto';
@@ -70,7 +70,7 @@ const UserAppointmentController = {
         .json({ error: 'Este agendamento já foi cancelado.' });
     }
 
-    if (appointment.conclude) {
+    if (appointment.concludedBy) {
       return res
         .status(400)
         .json({ error: 'Este agendamento já foi concluído.' });

@@ -5,29 +5,31 @@ import pt from 'date-fns/locale/pt';
 
 import Appointment from '../models/Appointment';
 import User from '../models/User';
+import AdminUser from '../models/AdminUser';
 
-const CanceledAppointmentController = {
+const ConcludedAppointmentController = {
   async index(_, res) {
     const appointments = await Appointment.findAll({
-      where: { canceled_at: { [Op.not]: null } },
+      where: { concluded_by: { [Op.not]: null } },
       order: [['date', 'DESC']],
+      attributes: ['id', 'cpf', 'services', 'docNumber', 'date'],
       include: [
         {
           model: User,
           as: 'user',
           attributes: ['name', 'phone', 'email'],
         },
+        {
+          model: AdminUser,
+          as: 'adminUser',
+          attributes: ['name'],
+        },
       ],
     });
 
     const formattedAppointmets = appointments.map((a) => {
       return {
-        id: a.id,
-        cpf: a.cpf,
-        user: a.user,
-        services: a.services,
-        docNumber: a.docNumber,
-        canceledAt: format(a.canceledAt, 'dd/MM/yyyy HH:mm', { locale: pt }),
+        ...a.dataValues,
         date: format(a.date, 'dd/MM/yyyy', { locale: pt }),
         hour: format(a.date, 'HH:mm', { locale: pt }),
       };
@@ -36,6 +38,7 @@ const CanceledAppointmentController = {
     return res.json(formattedAppointmets);
   },
 
+  // Conclude the appointment
   async update(req, res) {
     const schema = Yup.object().shape({
       id: Yup.number().required(),
@@ -57,10 +60,16 @@ const CanceledAppointmentController = {
         .json({ error: 'Este agendamento já foi concluído.' });
     }
 
-    await appointment.update({ conclude: true });
+    if (appointment.canceledAt) {
+      return res
+        .status(400)
+        .json({ error: 'Este agendamento está cancelado.' });
+    }
+
+    await appointment.update({ concludedBy: req.userId });
 
     return res.status(200).json();
   },
 };
 
-export default CanceledAppointmentController;
+export default ConcludedAppointmentController;

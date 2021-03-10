@@ -31,6 +31,7 @@ const SessionController = {
 
     return res.status(200).json({
       token: jwt.sign({ id: user.id }, authConfig.secret),
+      name: user.name,
     });
   },
 };

@@ -153,8 +153,9 @@ const AppointmentController = {
 
   async index(_, res) {
     const appointments = await Appointment.findAll({
-      where: { canceled_at: null },
-      order: [['conclude'], ['date', 'DESC']],
+      where: { canceled_at: null, concluded_by: null },
+      order: ['date'],
+      attributes: ['id', 'cpf', 'services', 'docNumber', 'date'],
       include: [
         {
           model: User,
@@ -165,66 +166,14 @@ const AppointmentController = {
     });
 
     const formattedAppointmets = appointments.map((a) => {
-      let status;
-      if (a.canceledAt) {
-        status = 'Cancelado';
-      } else if (a.conclude) {
-        status = 'Atendido';
-      } else {
-        status = 'Em aberto';
-      }
-      /* 
-        Check if is past date
-        if (isBefore(a.date, new Date())) {
-        status = 'Faltou';
-      } */
-
       return {
-        id: a.id,
-        cpf: a.cpf,
-        user: a.user,
-        services: a.services,
-        docNumber: a.docNumber,
-        status,
+        ...a.dataValues,
         date: format(a.date, 'dd/MM/yyyy', { locale: pt }),
         hour: format(a.date, 'HH:mm', { locale: pt }),
       };
     });
 
     return res.json(formattedAppointmets);
-  },
-
-  // Conclude the appointment
-  async update(req, res) {
-    const schema = Yup.object().shape({
-      id: Yup.number().required(),
-    });
-
-    if (!(await schema.isValid(req.params))) {
-      return res.status(400).json({ error: 'Validação falhou.' });
-    }
-
-    const appointment = await Appointment.findByPk(req.params.id);
-
-    if (!appointment) {
-      return res.status(400).json({ error: 'Agendamento não existe.' });
-    }
-
-    if (appointment.conclude) {
-      return res
-        .status(400)
-        .json({ error: 'Este agendamento já foi concluído.' });
-    }
-
-    if (appointment.canceledAt) {
-      return res
-        .status(400)
-        .json({ error: 'Este agendamento esta cancelado.' });
-    }
-
-    await appointment.update({ conclude: true });
-
-    return res.status(200).json();
   },
 };
 

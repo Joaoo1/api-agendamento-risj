@@ -24,6 +24,12 @@ class Appointment extends Model {
       targetKey: 'cpf',
       as: 'user',
     });
+
+    this.belongsTo(models.AdminUser, {
+      foreignKey: 'concludedBy',
+      targetKey: 'id',
+      as: 'adminUser',
+    });
   }
 }
 
