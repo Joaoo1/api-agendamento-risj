@@ -11,7 +11,7 @@ const ScheduleController = {
       });
 
       try {
-        await schema.validate(req.body, { abortEarly: false });
+        await schema.validate(req.body);
       } catch (err) {
         if (err.name === 'ValidationError') {
           return res.status(400).json({ error: err.errors });
@@ -24,8 +24,9 @@ const ScheduleController = {
         return res.status(400).json({ error: 'Horário inválido' });
       }
 
-      const [, hour] = req.body.schedule.split(':');
-      if (parseInt(hour, 10) > 59) {
+      // Check for invalid minutes
+      const [, minutes] = req.body.schedule.split(':');
+      if (parseInt(minutes, 10) > 59) {
         return res
           .status(400)
           .json({ error: 'Minutos não pode ser maior que 59' });
@@ -51,7 +52,9 @@ const ScheduleController = {
 
   async index(_, res) {
     let schedule = await Schedule.findAll({ order: [['schedule']] });
+
     schedule = schedule.map((s) => ({ id: s.id, schedule: s.schedule }));
+
     return res.json(schedule);
   },
 

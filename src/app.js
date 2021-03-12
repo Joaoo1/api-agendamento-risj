@@ -13,6 +13,7 @@ const app = express();
 // Make server recognize the requests as JSON objects
 app.use(express.json());
 
+// Only allow localhost as origin if is in development mode
 if (process.env.NODE_ENV === 'development') {
   app.use(cors({ origin: 'http://localhost:3000' }));
 } else {

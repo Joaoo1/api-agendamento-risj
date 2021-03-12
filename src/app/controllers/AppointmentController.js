@@ -34,6 +34,7 @@ const AppointmentController = {
           .required('Insira um CPF')
           // eslint-disable-next-line func-names
           .test('invalid-cpf', 'CPF Inválido', function (value) {
+            // Test if CPF is in the array of invalids CPFs
             return invalidCPFs.findIndex((cpf) => cpf === value) === -1;
           })
           .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, { message: 'CPF inválido' }),
@@ -43,6 +44,7 @@ const AppointmentController = {
           .required('Insira um telefone para contato')
           .min(10, 'Número de telefone inválido')
           .max(11, 'Número de telefone inválido')
+          // Test if phone is all the same digit
           .matches(/^([0-9])(?!\1+$)/, 'Número de telefone inválido'),
         email: Yup.string()
           .required('Insira um email')
@@ -135,6 +137,7 @@ const AppointmentController = {
       const sameTime = await Appointment.findAll({
         where: { date: parsedDate, canceledAt: null },
       });
+      // Only four appointments are available per hour
       if (sameTime > 3) {
         return res.status(400).json({ error: 'Horário indisponível.' });
       }

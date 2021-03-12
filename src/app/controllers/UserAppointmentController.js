@@ -8,8 +8,8 @@ const UserAppointmentController = {
   async index(req, res) {
     const schema = Yup.object().shape({
       cpf: Yup.string()
-        .required('Insira um CPF;')
-        .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, { message: 'CPF inválido;' }),
+        .required('Insira um CPF.')
+        .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, { message: 'CPF inválido.' }),
     });
 
     if (!(await schema.isValid(req.params))) {
@@ -26,22 +26,21 @@ const UserAppointmentController = {
 
     const formattedAppointmets = appointments.map((a) => {
       let status;
+
       if (a.canceledAt) {
         status = 'Cancelado';
       } else if (a.concludedBy) {
-        status = 'Concluído';
+        status = 'Atendido';
       } else {
         status = 'Em aberto';
       }
 
-      const { id, cpf, date } = a;
-
       return {
-        id,
-        cpf,
+        id: a.id,
+        cpf: a.cpf,
         status,
-        date: format(date, 'dd/MM/yyyy', { locale: pt }),
-        hour: format(date, 'HH:mm', { locale: pt }),
+        date: format(a.date, 'dd/MM/yyyy', { locale: pt }),
+        hour: format(a.date, 'HH:mm', { locale: pt }),
       };
     });
 
@@ -76,7 +75,7 @@ const UserAppointmentController = {
         .json({ error: 'Este agendamento já foi concluído.' });
     }
 
-    await appointment.update({ canceledAt: Date() });
+    await appointment.update({ canceledAt: Date(), canceledBy: null });
 
     return res.status(200).json();
   },

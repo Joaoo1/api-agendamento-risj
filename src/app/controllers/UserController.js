@@ -11,7 +11,7 @@ const UserController = {
     });
 
     try {
-      await schema.validate(req.params, { abortEarly: false });
+      await schema.validate(req.params);
     } catch (err) {
       if (err.name === 'ValidationError') {
         return res.status(400).json(err.errors);
@@ -20,18 +20,12 @@ const UserController = {
       return res.status(500).json({ error: 'Ocorreu um erro no servidor.' });
     }
 
-    const user = await User.findOne({ where: { cpf: req.params.cpf } });
+    const user = await User.findOne({
+      where: { cpf: req.params.cpf },
+      attributes: ['cpf', 'name', 'phone', 'email'],
+    });
 
-    return res.json(
-      user
-        ? {
-            cpf: user.cpf,
-            name: user.name,
-            phone: user.phone,
-            email: user.email,
-          }
-        : {}
-    );
+    return res.json(user || {});
   },
 };
 

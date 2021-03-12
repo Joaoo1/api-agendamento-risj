@@ -21,7 +21,7 @@ const ConcludedAppointmentController = {
         },
         {
           model: AdminUser,
-          as: 'adminUser',
+          as: 'concludedBy',
           attributes: ['name'],
         },
       ],
@@ -66,7 +66,8 @@ const ConcludedAppointmentController = {
         .json({ error: 'Este agendamento está cancelado.' });
     }
 
-    await appointment.update({ concludedBy: req.userId });
+    // TODO: Why can't use camelCase for concludedBy in update method??
+    await appointment.update({ concluded_by: req.userId });
 
     return res.status(200).json();
   },

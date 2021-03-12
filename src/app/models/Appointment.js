@@ -26,9 +26,15 @@ class Appointment extends Model {
     });
 
     this.belongsTo(models.AdminUser, {
-      foreignKey: 'concludedBy',
+      foreignKey: 'concluded_by',
+      as: 'concludedBy',
       targetKey: 'id',
-      as: 'adminUser',
+    });
+
+    this.belongsTo(models.AdminUser, {
+      foreignKey: 'canceled_by',
+      as: 'canceledBy',
+      targetKey: 'id',
     });
   }
 }

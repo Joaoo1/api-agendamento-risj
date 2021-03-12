@@ -42,4 +42,9 @@ routes.delete('/schedule/:id', ScheduleController.delete);
 
 routes.post('/admin_user', AdminUserController.store);
 
+routes.put(
+  '/admin_cancel_appointment/:id',
+  CanceledAppointmentController.update
+);
+
 export default routes;
