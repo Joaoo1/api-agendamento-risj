@@ -1,25 +1,8 @@
-import * as Yup from 'yup';
 import Schedule from '../models/Schedule';
 
 const ScheduleController = {
   async store(req, res) {
     try {
-      const schema = Yup.object().shape({
-        schedule: Yup.string()
-          .required('Insira o horário')
-          .matches(/^\d{2}:\d{2}/, { message: 'Horário inválido' }),
-      });
-
-      try {
-        await schema.validate(req.body);
-      } catch (err) {
-        if (err.name === 'ValidationError') {
-          return res.status(400).json({ error: err.errors });
-        }
-
-        return res.status(500).json({ error: 'Ocorreu um erro no servidor.' });
-      }
-
       if (req.body.schedule.length > 5) {
         return res.status(400).json({ error: 'Horário inválido' });
       }
@@ -59,15 +42,8 @@ const ScheduleController = {
   },
 
   async delete(req, res) {
-    const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).json({ error: 'ID Não informado' });
-    }
-
-    const schedule = await Schedule.findByPk(id);
-
     try {
+      const schedule = await Schedule.findByPk(req.params.id);
       await schedule.destroy();
 
       return res.status(204).json();

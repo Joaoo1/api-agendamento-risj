@@ -40,14 +40,6 @@ const ConcludedAppointmentController = {
 
   // Conclude the appointment
   async update(req, res) {
-    const schema = Yup.object().shape({
-      id: Yup.number().required(),
-    });
-
-    if (!(await schema.isValid(req.params))) {
-      return res.status(400).json({ error: 'Validação falhou.' });
-    }
-
     const appointment = await Appointment.findByPk(req.params.id);
 
     if (!appointment) {

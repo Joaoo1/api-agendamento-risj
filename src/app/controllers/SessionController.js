@@ -6,15 +6,6 @@ import authConfig from '../../config/auth';
 
 const SessionController = {
   async store(req, res) {
-    const schema = Yup.object().shape({
-      login: Yup.string().required(),
-      password: Yup.string().required(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validação falhou.' });
-    }
-
     const { login, password } = req.body;
 
     const user = await AdminUser.findOne({

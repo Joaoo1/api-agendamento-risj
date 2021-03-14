@@ -14,14 +14,9 @@ import Schedule from '../models/Schedule';
 
 const AvailableController = {
   async index(req, res) {
-    const { date } = req.query;
-
-    if (!date) {
-      return res.status(400).json({ error: 'Data inválida.' });
-    }
+    const searchDate = Number(req.query.date);
 
     // Get all appointments for the day in req.params.date
-    const searchDate = Number(date);
     const appointments = await Appointment.findAll({
       where: {
         canceledAt: null,
@@ -31,6 +26,7 @@ const AvailableController = {
       },
     });
 
+    // Get all schedules that user can select
     let schedules = await Schedule.findAll({ order: [['schedule']] });
     schedules = schedules.map((s) => s.schedule);
 

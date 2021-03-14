@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import { Op } from 'sequelize';
 import { format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
@@ -48,14 +47,6 @@ const CanceledAppointmentController = {
 
   // Appointment canceled by AdminUser
   async update(req, res) {
-    const schema = Yup.object().shape({
-      id: Yup.number().required(),
-    });
-
-    if (!(await schema.isValid(req.params))) {
-      return res.status(400).json({ error: 'Validação falhou.' });
-    }
-
     const appointment = await Appointment.findByPk(req.params.id, {
       include: [{ model: User, as: 'user', attributes: ['name', 'email'] }],
     });

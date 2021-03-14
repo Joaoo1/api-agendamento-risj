@@ -1,23 +1,13 @@
-import * as Yup from 'yup';
 import { format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
 import Appointment from '../models/Appointment';
-import Queue from '../../lib/Mail';
+import Queue from '../../lib/Queue';
 import CanceledAppointmentMail from '../jobs/CanceledAppointmentMail';
+import User from '../models/User';
 
 const UserAppointmentController = {
   async index(req, res) {
-    const schema = Yup.object().shape({
-      cpf: Yup.string()
-        .required('Insira um CPF.')
-        .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, { message: 'CPF inválido.' }),
-    });
-
-    if (!(await schema.isValid(req.params))) {
-      return res.status(400).json({ error: 'Validação falhou.' });
-    }
-
     const appointments = await Appointment.findAll({
       where: { cpf: req.params.cpf },
       order: [
@@ -51,15 +41,9 @@ const UserAppointmentController = {
 
   // Appointment canceled by user
   async update(req, res) {
-    const schema = Yup.object().shape({
-      id: Yup.number().required(),
+    const appointment = await Appointment.findByPk(req.params.id, {
+      include: [{ model: User, as: 'user', attributes: ['name', 'email'] }],
     });
-
-    if (!(await schema.isValid(req.params))) {
-      return res.status(400).json({ error: 'Validação falhou.' });
-    }
-
-    const appointment = await Appointment.findByPk(req.params.id);
 
     if (!appointment) {
       return res.status(400).json({ error: 'Agendamento não existe.' });
