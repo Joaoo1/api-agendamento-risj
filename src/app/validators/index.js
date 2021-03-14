@@ -1,7 +1,7 @@
 import AdminUserStore from './AdminUserStore';
 import AppointmentStore from './AppointmentStore';
 import AvailableIndex from './AvailableIndex';
-import CanceledAppointmentUpdate from './CanceledAppointmentUpdate';
+import AppointmentUpdate from './AppointmentUpdate';
 import ConcludedAppointmentUpdate from './ConcludedAppointmentUpdate';
 import ScheduleDelete from './ScheduleDelete';
 import ScheduleStore from './ScheduleStore';
@@ -14,7 +14,7 @@ export {
   AdminUserStore,
   AppointmentStore,
   AvailableIndex,
-  CanceledAppointmentUpdate,
+  AppointmentUpdate,
   ConcludedAppointmentUpdate,
   ScheduleDelete,
   ScheduleStore,

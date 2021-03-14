@@ -1,29 +1,14 @@
-import jwt from 'jsonwebtoken';
-import * as Yup from 'yup';
-
-import AdminUser from '../models/AdminUser';
-import authConfig from '../../config/auth';
+import StoreSessionService from '../services/StoreSessionService';
 
 const SessionController = {
   async store(req, res) {
-    const { login, password } = req.body;
+    try {
+      const { token, name } = await StoreSessionService.run(req.body);
 
-    const user = await AdminUser.findOne({
-      where: { login },
-    });
-
-    if (!user) {
-      return res.status(400).json({ error: 'Usuário não encontrado.' });
+      return res.status(200).json({ token, name });
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
     }
-
-    if (!(await user.checkPassword(password))) {
-      return res.status(400).json({ error: 'Senhas inválida.' });
-    }
-
-    return res.status(200).json({
-      token: jwt.sign({ id: user.id }, authConfig.secret),
-      name: user.name,
-    });
   },
 };
 

@@ -54,8 +54,8 @@ routes.get('/concluded_appointments', ConcludedAppointmentController.index);
 
 routes.put(
   '/admin_cancel_appointment/:id',
-  validators.CanceledAppointmentUpdate,
-  CanceledAppointmentController.update
+  validators.AppointmentUpdate,
+  AppointmentController.update
 );
 
 routes.use(authAdmin);

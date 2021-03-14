@@ -1,18 +1,14 @@
-import AdminUser from '../models/AdminUser';
+import StoreAdminUserService from '../services/StoreAdminUserService';
 
 const AvailableController = {
   async store(req, res) {
-    const userExists = await AdminUser.findOne({
-      where: { login: req.body.login },
-    });
+    try {
+      const { name, login } = await StoreAdminUserService.run(req.body);
 
-    if (userExists) {
-      return res.status(400).json({ error: 'Esse login já está em uso' });
+      return res.status(201).json({ name, login });
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
     }
-
-    const { name, login } = await AdminUser.create(req.body);
-
-    return res.status(201).json({ name, login });
   },
 };
 
