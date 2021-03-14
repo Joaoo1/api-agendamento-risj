@@ -35,16 +35,16 @@ routes.get('/schedule', ScheduleController.index);
 routes.put('/conclude_appointment/:id', ConcludedAppointmentController.update);
 routes.get('/concluded_appointments', ConcludedAppointmentController.index);
 
+routes.put(
+  '/admin_cancel_appointment/:id',
+  CanceledAppointmentController.update
+);
+
 routes.use(authAdmin);
 
 routes.post('/schedule', ScheduleController.store);
 routes.delete('/schedule/:id', ScheduleController.delete);
 
 routes.post('/admin_user', AdminUserController.store);
-
-routes.put(
-  '/admin_cancel_appointment/:id',
-  CanceledAppointmentController.update
-);
 
 export default routes;

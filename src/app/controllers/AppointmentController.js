@@ -1,10 +1,13 @@
 import * as Yup from 'yup';
-import { isBefore, format, parseISO } from 'date-fns';
+import { isBefore, format, parseISO, startOfDay, endOfDay } from 'date-fns';
 import pt from 'date-fns/locale/pt';
+import { Op } from 'sequelize';
 
 import Appointment from '../models/Appointment';
 import User from '../models/User';
 import Schedule from '../models/Schedule';
+import Queue from '../../lib/Queue';
+import SuccessAppointmentMail from '../jobs/SuccessAppointmentMail';
 
 const AppointmentController = {
   async store(req, res) {
@@ -133,16 +136,29 @@ const AppointmentController = {
         return res.status(400).json({ error: 'Horário inválido.' });
       }
 
-      // Check availability
+      /*
+       * Check availability
+       * Because only four appointments are available per hour
+       */
       const sameTime = await Appointment.findAll({
-        where: { date: parsedDate, canceledAt: null },
+        where: {
+          canceledAt: null,
+          date: {
+            [Op.between]: [startOfDay(parsedDate), endOfDay(parsedDate)],
+          },
+        },
       });
-      // Only four appointments are available per hour
-      if (sameTime > 3) {
+      if (sameTime.length > 3) {
         return res.status(400).json({ error: 'Horário indisponível.' });
       }
 
       await Appointment.create(req.body);
+
+      // Send email to user
+      await Queue.add(SuccessAppointmentMail.key, {
+        user,
+        date,
+      });
 
       return res
         .status(201)

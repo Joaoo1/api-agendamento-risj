@@ -14,6 +14,7 @@ module.exports = {
     'import/extensions': 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: 'next' }],
     'no-param-reassign': 'off',
+    'class-methods-use-this': 'off',
     camelcase: 'off',
   },
 };

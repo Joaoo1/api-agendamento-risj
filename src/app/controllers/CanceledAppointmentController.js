@@ -6,6 +6,8 @@ import pt from 'date-fns/locale/pt';
 import Appointment from '../models/Appointment';
 import User from '../models/User';
 import AdminUser from '../models/AdminUser';
+import Queue from '../../lib/Queue';
+import CanceledAppointmentMail from '../jobs/CanceledAppointmentMail';
 
 const CanceledAppointmentController = {
   async index(_, res) {
@@ -44,6 +46,7 @@ const CanceledAppointmentController = {
     return res.json(formattedAppointmets);
   },
 
+  // Appointment canceled by AdminUser
   async update(req, res) {
     const schema = Yup.object().shape({
       id: Yup.number().required(),
@@ -53,7 +56,9 @@ const CanceledAppointmentController = {
       return res.status(400).json({ error: 'Validação falhou.' });
     }
 
-    const appointment = await Appointment.findByPk(req.params.id);
+    const appointment = await Appointment.findByPk(req.params.id, {
+      include: [{ model: User, as: 'user', attributes: ['name', 'email'] }],
+    });
 
     if (!appointment) {
       return res.status(400).json({ error: 'Agendamento não existe.' });
@@ -70,6 +75,9 @@ const CanceledAppointmentController = {
         .status(400)
         .json({ error: 'Este agendamento já foi cancelado.' });
     }
+
+    // Send email to user
+    await Queue.add(CanceledAppointmentMail.key, { appointment });
 
     // TODO: Why can't use camelCase for canceledBy in update method??
     await appointment.update({ canceledAt: Date(), canceled_by: req.userId });

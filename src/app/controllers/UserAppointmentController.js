@@ -3,6 +3,8 @@ import { format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
 import Appointment from '../models/Appointment';
+import Queue from '../../lib/Mail';
+import CanceledAppointmentMail from '../jobs/CanceledAppointmentMail';
 
 const UserAppointmentController = {
   async index(req, res) {
@@ -47,7 +49,7 @@ const UserAppointmentController = {
     return res.json(formattedAppointmets);
   },
 
-  // Cancel the appointmnent
+  // Appointment canceled by user
   async update(req, res) {
     const schema = Yup.object().shape({
       id: Yup.number().required(),
@@ -74,6 +76,9 @@ const UserAppointmentController = {
         .status(400)
         .json({ error: 'Este agendamento já foi concluído.' });
     }
+
+    // Send email to user
+    await Queue.add(CanceledAppointmentMail.key, { appointment });
 
     await appointment.update({ canceledAt: Date(), canceledBy: null });
 
