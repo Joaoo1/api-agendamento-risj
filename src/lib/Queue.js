@@ -1,4 +1,6 @@
 import Bee from 'bee-queue';
+import { captureException } from '@sentry/node';
+
 import CanceledAppointmentMail from '../app/jobs/CanceledAppointmentMail';
 import SuccessAppointmentMail from '../app/jobs/SuccessAppointmentMail';
 import redisConfig from '../config/redis';
@@ -35,9 +37,8 @@ class Queue {
   }
 
   handleFailure(job, err) {
-    // TODO: Send error to a monitoring application like Sentry
-    // eslint-disable-next-line no-console
-    console.log(`Queue ${job.queue.name}: FAILED`, err);
+    err.customMessage = `Queue ${job.queue.name}: FAILED`;
+    captureException(err);
   }
 }
 

@@ -2,14 +2,22 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import Youch from 'youch';
+import * as Sentry from '@sentry/node';
 import 'express-async-errors';
 import helmet from 'helmet';
 
 import routes from './routes';
+import sentryConfig from './config/sentry';
 
 import './database';
 
 const app = express();
+
+// Monitoring errors
+Sentry.init(sentryConfig);
+
+app.use(Sentry.Handlers.requestHandler());
+
 // Make server recognize the requests as JSON objects
 app.use(express.json());
 
@@ -32,6 +40,8 @@ app.use(helmet());
 
 // Routes
 app.use(routes);
+
+app.use(Sentry.Handlers.errorHandler());
 
 // Express exception handler
 app.use(async (err, req, res, _next) => {
