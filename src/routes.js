@@ -9,6 +9,8 @@ import CanceledAppointmentController from './app/controllers/CanceledAppointment
 import SessionController from './app/controllers/SessionController';
 import AdminUserController from './app/controllers/AdminUserController';
 import ConcludedAppointmentController from './app/controllers/ConcludedAppointmentController';
+import CanceledppointmentCountController from './app/controllers/CanceledAppointmentCountController';
+import ConcludedappointmentCountController from './app/controllers/ConcludedAppointmentCountController';
 import authUser from './app/middlewares/authUser';
 import authAdmin from './app/middlewares/authAdmin';
 import * as validators from './app/validators';
@@ -56,6 +58,15 @@ routes.put(
   '/admin_cancel_appointment/:id',
   validators.AppointmentUpdate,
   AppointmentController.update
+);
+
+routes.get(
+  '/count_canceled_appointments',
+  CanceledppointmentCountController.show
+);
+routes.get(
+  '/count_concluded_appointments',
+  ConcludedappointmentCountController.show
 );
 
 routes.use(authAdmin);

@@ -22,7 +22,6 @@ class CancelAppointmentService {
       throw new Error('Este agendamento já foi cancelado.');
     }
 
-    // TODO: Why can't use camelCase for canceledBy in update method??
     await appointment.update({ canceledAt: Date(), canceled_by: adminUserId });
 
     // Send email to user

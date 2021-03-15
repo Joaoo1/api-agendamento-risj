@@ -3,7 +3,7 @@ import pt from 'date-fns/locale/pt';
 
 import Appointment from '../models/Appointment';
 
-class GetUserAppointmentsService {
+class ListUserAppointmentsService {
   async run({ cpf }) {
     const appointments = await Appointment.findAll({
       where: { cpf },
@@ -37,4 +37,4 @@ class GetUserAppointmentsService {
   }
 }
 
-export default new GetUserAppointmentsService();
+export default new ListUserAppointmentsService();

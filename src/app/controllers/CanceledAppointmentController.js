@@ -1,8 +1,11 @@
-import GetCanceledAppointmentsService from '../services/GetCanceledAppointmentsService';
+import ListCanceledAppointmentsService from '../services/ListCanceledAppointmentsService';
 
 const CanceledAppointmentController = {
-  async index(_, res) {
-    const appointments = await GetCanceledAppointmentsService.run();
+  async index(req, res) {
+    const appointments = await ListCanceledAppointmentsService.run({
+      page: req.query.page,
+    });
+
     return res.json(appointments);
   },
 };

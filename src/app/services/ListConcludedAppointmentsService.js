@@ -1,20 +1,29 @@
 import { format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
+import { Op } from 'sequelize';
 
 import Appointment from '../models/Appointment';
 import User from '../models/User';
+import AdminUser from '../models/AdminUser';
 
-class GetAppointmentsService {
-  async run() {
+class ListConcludedAppointmentsService {
+  async run({ page = 1 }) {
     const appointments = await Appointment.findAll({
-      where: { canceled_at: null, concluded_by: null },
-      order: ['date'],
+      where: { concluded_by: { [Op.not]: null } },
+      order: [['date', 'DESC']],
       attributes: ['id', 'cpf', 'services', 'docNumber', 'date'],
+      limit: 40,
+      offset: (page - 1) * 40,
       include: [
         {
           model: User,
           as: 'user',
           attributes: ['name', 'phone', 'email'],
+        },
+        {
+          model: AdminUser,
+          as: 'concludedBy',
+          attributes: ['name'],
         },
       ],
     });
@@ -31,4 +40,4 @@ class GetAppointmentsService {
   }
 }
 
-export default new GetAppointmentsService();
+export default new ListConcludedAppointmentsService();

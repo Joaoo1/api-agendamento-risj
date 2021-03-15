@@ -16,7 +16,6 @@ class ConcludeAppointmentService {
       throw new Error('Este agendamento está cancelado.');
     }
 
-    // TODO: Why can't use camelCase for concludedBy in update method??
     await appointment.update({ concluded_by: adminUserId });
   }
 }

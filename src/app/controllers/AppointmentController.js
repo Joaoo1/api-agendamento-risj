@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
 import CreateAppointmentService from '../services/CreateAppointmentService';
-import GetAppointmentsService from '../services/GetAppointmentsService';
+import ListAppointmentsService from '../services/ListAppointmentsService';
 import CancelAppointmentService from '../services/CancelAppointmentService';
 
 const AppointmentController = {
@@ -20,7 +20,7 @@ const AppointmentController = {
   },
 
   async index(_, res) {
-    const appointments = await GetAppointmentsService.run();
+    const appointments = await ListAppointmentsService.run();
 
     return res.json(appointments);
   },

@@ -1,9 +1,9 @@
 import CancelAppointmentService from '../services/CancelAppointmentService';
-import GetUserAppointmentsService from '../services/GetUserAppointmentsService';
+import ListUserAppointmentsService from '../services/ListUserAppointmentsService';
 
 const UserAppointmentController = {
   async index(req, res) {
-    const appointments = await GetUserAppointmentsService.run({
+    const appointments = await ListUserAppointmentsService.run({
       cpf: req.params.cpf,
     });
 

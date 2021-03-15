@@ -1,9 +1,11 @@
-import GetConcludedAppointmentsService from '../services/GetConcludedAppointmentsService';
+import ListConcludedAppointmentsService from '../services/ListConcludedAppointmentsService';
 import ConcludeAppointmentService from '../services/ConcludeAppointmentService';
 
 const ConcludedAppointmentController = {
-  async index(_, res) {
-    const appointmets = await GetConcludedAppointmentsService.run();
+  async index(req, res) {
+    const appointmets = await ListConcludedAppointmentsService.run({
+      page: req.query.page,
+    });
 
     return res.json(appointmets);
   },
