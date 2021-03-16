@@ -9,6 +9,7 @@ import SessionStore from './SessionStore';
 import UserAppointmentIndex from './UserAppointmentIndex';
 import UserAppointmentUpdate from './UserAppointmentUpdate';
 import UserShow from './UserShow';
+import HolidayStore from './HolidayStore';
 
 export {
   AdminUserStore,
@@ -22,4 +23,5 @@ export {
   UserAppointmentIndex,
   UserAppointmentUpdate,
   UserShow,
+  HolidayStore,
 };

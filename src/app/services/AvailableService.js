@@ -12,6 +12,7 @@ import {
 
 import { Op } from 'sequelize';
 import Appointment from '../models/Appointment';
+import Holiday from '../models/Holiday';
 import Schedule from '../models/Schedule';
 
 class AvailableService {
@@ -30,6 +31,17 @@ class AvailableService {
     let schedules = await Schedule.findAll({ order: [['schedule']] });
     schedules = schedules.map((s) => s.schedule);
 
+    const holidays = await Holiday.findAll();
+    const isHoliday = holidays.find((holiday) => isSameDay(holiday.day, date));
+
+    // The appointment can't be on holidays or weekends
+    if (isHoliday || isWeekend(date)) {
+      return schedules.map((time) => ({
+        time,
+        available: false,
+      }));
+    }
+
     // Get all available schedules
     const available = schedules.map((time) => {
       const [hour, minute] = time.split(':');
@@ -41,10 +53,6 @@ class AvailableService {
         available:
           // The appointment can't be in the past
           isAfter(value, new Date()) &&
-          // and can't be on weekends
-          !isWeekend(value) &&
-          // Block holiday
-          !isSameDay(new Date(2021, 2, 19), value) &&
           // Only 4 appointments is available per schedule
           appointments.reduce(
             (n, val) => n + (format(val.date, 'HH:mm') === time),

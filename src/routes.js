@@ -11,6 +11,7 @@ import AdminUserController from './app/controllers/AdminUserController';
 import ConcludedAppointmentController from './app/controllers/ConcludedAppointmentController';
 import CanceledppointmentCountController from './app/controllers/CanceledAppointmentCountController';
 import ConcludedappointmentCountController from './app/controllers/ConcludedAppointmentCountController';
+import HolidayController from './app/controllers/HolidayController';
 import authUser from './app/middlewares/authUser';
 import authAdmin from './app/middlewares/authAdmin';
 import * as validators from './app/validators';
@@ -41,6 +42,8 @@ routes.get('/user/:cpf', validators.UserShow, UserController.show);
 routes.post('/admin_session', validators.SessionStore, SessionController.store);
 
 routes.use(authUser);
+
+routes.get('/holidays', HolidayController.index);
 
 routes.get('/appointments', AppointmentController.index);
 routes.get('/canceled_appointments', CanceledAppointmentController.index);
@@ -77,11 +80,13 @@ routes.delete(
   validators.ScheduleDelete,
   ScheduleController.delete
 );
-
 routes.post(
   '/admin_user',
   validators.AdminUserStore,
   AdminUserController.store
 );
+
+routes.post('/holiday', validators.HolidayStore, HolidayController.store);
+routes.delete('/holiday/:id', HolidayController.delete);
 
 export default routes;
