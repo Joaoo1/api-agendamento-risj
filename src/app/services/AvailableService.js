@@ -7,7 +7,9 @@ import {
   format,
   isAfter,
   isWeekend,
+  isSameDay,
 } from 'date-fns';
+
 import { Op } from 'sequelize';
 import Appointment from '../models/Appointment';
 import Schedule from '../models/Schedule';
@@ -41,6 +43,8 @@ class AvailableService {
           isAfter(value, new Date()) &&
           // and can't be on weekends
           !isWeekend(value) &&
+          // Block holiday
+          !isSameDay(new Date(2021, 2, 19), value) &&
           // Only 4 appointments is available per schedule
           appointments.reduce(
             (n, val) => n + (format(val.date, 'HH:mm') === time),
