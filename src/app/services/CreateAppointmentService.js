@@ -1,6 +1,7 @@
-import { isBefore, format, parseISO } from 'date-fns';
+import { isBefore, format, parseISO, startOfDay, endOfDay } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
+import { Op } from 'sequelize';
 import Schedule from '../models/Schedule';
 import User from '../models/User';
 import Queue from '../../lib/Queue';
@@ -27,6 +28,19 @@ class CreateAppointmentService {
       if (user && user.email !== email) {
         user.update({ email });
       }
+    }
+
+    const alreadyHaveOpenAppointment = await Appointment.findOne({
+      where: {
+        date: { [Op.between]: [startOfDay(parsedDate), endOfDay(parsedDate)] },
+        canceledAt: null,
+        concluded_by: null,
+      },
+    });
+
+    // It's only permitted one appointment per day
+    if (alreadyHaveOpenAppointment) {
+      throw new Error('Você já possui um agendamento aberto para esse dia.');
     }
 
     // Check if is past date
