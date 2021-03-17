@@ -33,6 +33,7 @@ class CreateAppointmentService {
     const alreadyHaveOpenAppointment = await Appointment.findOne({
       where: {
         date: { [Op.between]: [startOfDay(parsedDate), endOfDay(parsedDate)] },
+        cpf,
         canceledAt: null,
         concluded_by: null,
       },
