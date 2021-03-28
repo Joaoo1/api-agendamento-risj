@@ -15,9 +15,6 @@ class Holiday extends Model {
     return this;
   }
 
-  checkPassword(password) {
-    return bcrypt.compare(password, this.passwordHash);
-  }
 }
 
 export default Holiday;
