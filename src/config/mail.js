@@ -6,6 +6,6 @@ export default {
     pass: process.env.MAIL_PASS,
   },
   default: {
-    from: 'Registro de imóveis de São José <naoresponda@risaojose.com.br>',
+    from: process.env.MAIL_FROM,
   },
 };

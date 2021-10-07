@@ -1,27 +1,21 @@
-import ListConcludedAppointmentsService from '../services/ListConcludedAppointmentsService';
-import ConcludeAppointmentService from '../services/ConcludeAppointmentService';
+import IndexConcludedAppointmentsService from '../services/IndexConcludedAppointmentsService';
+import StoreConcludeAppointmentService from '../services/StoreConcludeAppointmentService';
 
 const ConcludedAppointmentController = {
   async index(req, res) {
-    const appointmets = await ListConcludedAppointmentsService.run({
+    const appointmets = await IndexConcludedAppointmentsService.run({
       page: req.query.page,
+      perPage: req.query.perPage,
     });
-
-    return res.json(appointmets);
+    return res.status(200).json(appointmets);
   },
 
-  // Conclude the appointment
-  async update(req, res) {
-    try {
-      await ConcludeAppointmentService.run({
-        id: req.params.id,
-        adminUserId: req.userId,
-      });
-
-      return res.status(200).json();
-    } catch (err) {
-      return res.status(400).json({ error: err.message });
-    }
+  async store(req, res) {
+    await StoreConcludeAppointmentService.run({
+      appointmentId: req.params.id,
+      adminUserId: req.userId,
+    });
+    return res.status(201).json();
   },
 };
 

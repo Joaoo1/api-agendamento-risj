@@ -1,13 +1,9 @@
-import User from '../models/User';
+import ShowUserService from '../services/ShowUserService';
 
 const UserController = {
   async show(req, res) {
-    const user = await User.findOne({
-      where: { cpf: req.params.cpf },
-      attributes: ['cpf', 'name', 'phone', 'email'],
-    });
-
-    return res.json(user || {});
+    const user = await ShowUserService.run({ cpf: req.params.cpf });
+    return res.status(200).json(user);
   },
 };
 

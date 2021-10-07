@@ -1,33 +1,21 @@
-import Holiday from '../models/Holiday';
-import ListHolidaysService from '../services/ListHolidaysService';
+import IndexHolidaysService from '../services/IndexHolidaysService';
 import StoreHolidayService from '../services/StoreHolidayService';
+import DestroyHolidayService from '../services/DestroyHolidayService';
 
 const HolidayController = {
-  async index(_, res) {
-    const holidays = await ListHolidaysService.run();
-
-    return res.json(holidays);
+  async index(req, res) {
+    const holidays = await IndexHolidaysService.run();
+    return res.status(200).json(holidays);
   },
 
   async store(req, res) {
-    try {
-      await StoreHolidayService.run({ date: req.body.date });
-      return res.status(201).json({});
-    } catch (err) {
-      return res.status(400).json({ error: err.message });
-    }
+    await StoreHolidayService.run({ date: req.body.date });
+    return res.status(201).json();
   },
 
-  async delete(req, res) {
-    try {
-      await (await Holiday.findByPk(req.params.id)).destroy();
-
-      return res.status(204).json();
-    } catch (err) {
-      return res
-        .status(500)
-        .json({ error: 'Ocorreu um erro ao excluir a data' });
-    }
+  async destroy(req, res) {
+    await DestroyHolidayService.run({ holidayId: req.params.holidayId });
+    return res.status(204).json();
   },
 };
 

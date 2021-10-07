@@ -1,3 +1,4 @@
+import AppError from '../errors/AppError';
 import AdminUser from '../models/AdminUser';
 
 class StoreAdminUserService {
@@ -7,7 +8,7 @@ class StoreAdminUserService {
     });
 
     if (userExists) {
-      throw new Error('Esse login já está em uso');
+      throw new AppError(409, 'Esse login já está em uso');
     }
 
     const adminUser = await AdminUser.create({

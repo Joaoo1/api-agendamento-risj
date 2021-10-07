@@ -1,4 +1,5 @@
 import AdminUser from '../models/AdminUser';
+import AppError from '../errors/AppError';
 
 export default async (req, res, next) => {
   const { isAdmin } = await AdminUser.findByPk(req.userId);
@@ -7,7 +8,5 @@ export default async (req, res, next) => {
     return next();
   }
 
-  return res
-    .status(401)
-    .json({ error: 'Você não tem permissão para fazer isso.' });
+  throw new AppError(401, 'Acesso negado');
 };

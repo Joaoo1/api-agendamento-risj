@@ -1,38 +1,21 @@
-import Schedule from '../models/Schedule';
 import StoreScheduleService from '../services/StoreScheduleService';
+import IndexSchedulesService from '../services/IndexSchedulesService';
+import DestroyScheduleService from '../services/DestroyScheduleService';
 
 const ScheduleController = {
+  async index(req, res) {
+    const schedules = await IndexSchedulesService.run();
+    return res.status(200).json(schedules);
+  },
+
   async store(req, res) {
-    try {
-      await StoreScheduleService.run({ schedule: req.body.schedule });
-
-      return res.status(201).json();
-    } catch (err) {
-      return res.status(400).json({
-        error: err.message,
-      });
-    }
+    await StoreScheduleService.run({ schedule: req.body.schedule });
+    return res.status(201).json();
   },
 
-  async index(_, res) {
-    let schedule = await Schedule.findAll({ order: [['schedule']] });
-
-    schedule = schedule.map((s) => ({ id: s.id, schedule: s.schedule }));
-
-    return res.json(schedule);
-  },
-
-  async delete(req, res) {
-    try {
-      const schedule = await Schedule.findByPk(req.params.id);
-      await schedule.destroy();
-
-      return res.status(204).json();
-    } catch (err) {
-      return res
-        .status(500)
-        .json({ error: 'Ocorreu um erro ao excluir horário' });
-    }
+  async destroy(req, res) {
+    await DestroyScheduleService.run({ scheduleId: req.params.scheduleId });
+    return res.status(204).json();
   },
 };
 

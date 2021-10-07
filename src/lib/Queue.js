@@ -30,15 +30,15 @@ class Queue {
   }
 
   processQueue() {
-    jobs.forEach((job) => {
+    jobs.forEach(job => {
       const { bee, handle } = this.queues[job.key];
       bee.on('failed', this.handleFailure).process(handle);
     });
   }
 
   handleFailure(job, err) {
-    err.customMessage = `Queue ${job.queue.name}: FAILED`;
-    captureException(err);
+    const customMessage = `Queue ${job.queue.name}: FAILED`;
+    captureException({ ...err, customMessage });
   }
 }
 

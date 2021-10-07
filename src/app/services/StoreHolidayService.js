@@ -1,5 +1,7 @@
 import { endOfDay, startOfDay } from 'date-fns';
 import { Op } from 'sequelize';
+
+import AppError from '../errors/AppError';
 import Holiday from '../models/Holiday';
 
 class StoreHolidayService {
@@ -16,7 +18,7 @@ class StoreHolidayService {
     });
 
     if (holidayAlreadyExists) {
-      throw new Error('Esta data já está cadastrada');
+      throw new AppError(409, 'Esta data já está cadastrada');
     }
 
     await Holiday.create({ day: parsedDate });

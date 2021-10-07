@@ -1,15 +1,10 @@
 import StoreAdminUserService from '../services/StoreAdminUserService';
 
-const AvailableController = {
+const AdminUserController = {
   async store(req, res) {
-    try {
-      const { name, login } = await StoreAdminUserService.run(req.body);
-
-      return res.status(201).json({ name, login });
-    } catch (err) {
-      return res.status(400).json({ error: err.message });
-    }
+    const { name, login } = await StoreAdminUserService.run(req.body);
+    return res.status(201).json({ name, login });
   },
 };
 
-export default AvailableController;
+export default AdminUserController;

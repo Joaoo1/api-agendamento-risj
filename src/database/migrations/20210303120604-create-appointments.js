@@ -27,7 +27,21 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
+      concluded_by: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: { model: 'admin_users', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
       canceled_at: { type: Sequelize.DATE },
+      canceled_by: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: { model: 'admin_users', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -39,7 +53,7 @@ module.exports = {
     });
   },
 
-  down: async (queryInterface) => {
+  down: async queryInterface => {
     await queryInterface.dropTable('appointments');
   },
 };

@@ -1,56 +1,42 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import Youch from 'youch';
 import * as Sentry from '@sentry/node';
 import 'express-async-errors';
 import helmet from 'helmet';
 
-import routes from './routes';
-import sentryConfig from './config/sentry';
-
 import './database';
+import routes from './app/routes';
+import sentryConfig from './config/sentry';
+import ExceptionHandler from './app/middlewares/ExceptionHandler';
+import NotFoundHandler from './app/middlewares/NotFoundHandler';
 
 const app = express();
 
 // Monitoring errors
 Sentry.init(sentryConfig);
-
 app.use(Sentry.Handlers.requestHandler());
 
-// Make server recognize the requests as JSON objects
 app.use(express.json());
 
-// Only allow localhost as origin if is in development mode
-if (process.env.NODE_ENV === 'development') {
-  app.use(cors({ origin: 'http://localhost:3000' }));
-} else {
-  app.use(
-    cors({
-      origin: [
-        'https://agendamento-risj-hodte.ondigitalocean.app',
-        'https://agendamento.risaojose.com.br',
-      ],
-    })
-  );
-}
+const isDevelopmentMode = process.env.NODE_ENV === 'development';
+const origin = isDevelopmentMode
+  ? `http://localhost:${process.env.PORT}`
+  : [
+      'https://agendamento-risj-hodte.ondigitalocean.app',
+      'https://agendamento.risaojose.com.br',
+    ];
+app.use(cors({ origin }));
 
 // Helmet helps to secure express apps by setting various HTTP headers
 app.use(helmet());
 
-// Routes
 app.use(routes);
 
 app.use(Sentry.Handlers.errorHandler());
 
-// Express exception handler
-app.use(async (err, req, res, _next) => {
-  if (process.env.NODE_ENV === 'development') {
-    const errors = await new Youch(err, req).toJSON();
-    return res.status(500).json(errors);
-  }
+app.use(NotFoundHandler);
 
-  return res.status(500);
-});
+app.use(ExceptionHandler);
 
 export default app;

@@ -16,11 +16,10 @@ class AdminUser extends Model {
       }
     );
 
-    this.addHook('beforeSave', async (user) => {
-      /* Just execute it if password was informed,
-        for example, on create user */
+    this.addHook('beforeSave', async user => {
       if (user.password) {
-        user.passwordHash = await bcrypt.hash(user.password, 8);
+        const passwordHash = await bcrypt.hash(user.password, 8);
+        user.setDataValue('passwordHash', passwordHash);
       }
     });
 
